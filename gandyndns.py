@@ -4,17 +4,6 @@
 
 import requests
 
-# Defines the URL to access the API and the resource
-fqdn = "example.com"
-rrset_name = "@"
-rrset_type = "A"
-apiUrl = f"https://api.gandi.net/v5/livedns/domains/{fqdn}/records/{rrset_name}/{rrset_type}"
-
-# Define the headers to use for the API
-apikey = "account-api-key"
-headers={"Authorization": f"Apikey {apikey}", 'User-Agent': 'Mozilla/5.0', "Content-Type": "application/json"}
-
-
 def retrieve_dns_IP(headers, apiUrl):
     """Retrieves the IP in the DNS record using the fqdn, rrset_name (for instance subdomain like www etc) and rrset_type (the DNS record type A, CNAME ...).
     
@@ -49,6 +38,15 @@ def update_dns_IP(apiUrl, headers, currentPublicIP):
     requests.put(url=apiUrl, headers=headers, json=data)
 
 def main():
+    # Defines the URL to access the API and the resource
+    fqdn = "example.com"
+    rrset_name = "@"
+    rrset_type = "A"
+    apiUrl = f"https://api.gandi.net/v5/livedns/domains/{fqdn}/records/{rrset_name}/{rrset_type}"
+
+    # Define the headers to use for the API
+    apikey = "account-api-key"
+    headers={"Authorization": f"Apikey {apikey}", 'User-Agent': 'Mozilla/5.0', "Content-Type": "application/json"}
     dnsIP = retrieve_dns_IP(headers, apiUrl)
 
     currentPublicIP = retrieve_public_IP()
