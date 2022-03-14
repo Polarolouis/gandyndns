@@ -11,7 +11,7 @@ The script was designed to be run using a cron task :
 sudo crontab -e
 ```
 
-And then to execute every *15 minutes* write in the crontab :  
+And then to execute *every 15 minutes* write in the crontab :  
 
 ```
  */15 * * * * python /opt/services/scripts/gandyndns.py
