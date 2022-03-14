@@ -5,7 +5,22 @@ and replacing the IP with the public IP of the machine on which the code is exec
 This script was inspired by matt1's gandi-ddns script : [matt1/gandi-ddns](https://github.com/matt1/gandi-ddns)
 
 ## Usage
-The script was designed to be run using a cron task :
+1. **Define an object of class GanDynDns at the end of the file** : 
+```
+main = GanDynDns("example.org", "@", "A", "your-api-key")
+```
+Or if you want to define multiple domains to update :
+
+```
+domain = "example.org"
+apikey = "your-api-key"
+
+main = GanDynDns(domain, "@", "A", apikey)
+mail = GanDynDns(domain, "mail", "A" apikey)
+```
+Each time the script runs and the objects are created they check if *the IPs in the DNS record* match the *current public IP*.
+
+2. **Run the script using a cron task** :
 
 ```
 sudo crontab -e
