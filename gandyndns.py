@@ -55,7 +55,8 @@ def retrieve_dns_IP(apiUrl, headers):
 
     Returns:
             retrievedDnsIp (str): string of the IP address in the DNS record"""
-
+    if verbose:
+        print("Retrieving the DNS IP")
     response = requests.get(apiUrl, headers=headers)
 
     responseJson = response.json()  # IPs are stored in a list as string
@@ -72,16 +73,26 @@ def update_dns_IP(apiUrl, headers):
     """Updates the IP in the DNS record using the IP provided (acquired by retrieve_public_IP) if it is different from the DNS IP"""
     publicIP = retrieve_public_IP()
     dnsIP = retrieve_dns_IP(apiUrl, headers)
-
+    if verbose:
+        print(f"Public IP is : {publicIP}")
+        if dnsIP:
+            print(f"DNS IP is : {dnsIP}")
+        else:
+            print("The subdomain doesn't exist, no DNS IP associated")
     if not publicIP == dnsIP:
+        if verbose:
+            print("IPs do not match, setting DNS IP")
         data = {
             "rrset_values": [publicIP]
         }
         print(f"{domain_record_string : <{domain_record_string_lenght}} | Old IP : {dnsIP} replaced -> by New IP : {publicIP}")
-        requests.put(url=apiUrl, headers=headers, json=data)
+        response = requests.put(url=apiUrl, headers=headers, json=data)
+        if verbose:
+            print(f"Request exited with status code : {response.status_code}")
     else:
         print(
             f"{domain_record_string : <{domain_record_string_lenght}} | {'IPs are the same.':<17}")
+
 
 if __name__ == '__main__':
     update_dns_IP(apiUrl, headers)
