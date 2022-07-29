@@ -35,3 +35,5 @@ And then to execute *every X minutes* (where X should be an integer between 1 an
 ```
  */X * * * * python /path/to/script/gandyndns.py example.com @ my-api-key
 ```
+
+To set multiple domains or subdomains just add multiple lines.
