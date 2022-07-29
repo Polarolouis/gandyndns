@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @author: lordof20th
+# @author: polarolouis
 
 import requests
 import argparse
