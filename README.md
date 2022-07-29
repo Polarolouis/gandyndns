@@ -5,29 +5,33 @@ and replacing the IP with the public IP of the machine on which the code is exec
 This script was inspired by matt1's gandi-ddns script : [matt1/gandi-ddns](https://github.com/matt1/gandi-ddns)
 
 ## Usage
-1. **Define an object of class GanDynDns at the end of the file** : 
-```
-main = GanDynDns("example.org", "@", "A", "your-api-key")
-```
-Or if you want to define multiple domains to update :
 
 ```
-domain = "example.org"
-apikey = "your-api-key"
+usage: gandyndns.py [-h] [-v] [--type TYPE] DOMAIN SUBDOMAIN APIKEY
 
-main = GanDynDns(domain, "@", "A", apikey)
-mail = GanDynDns(domain, "mail", "A" apikey)
+A script which connect to Gandi.net API to change IP associated to a DNS record
+
+positional arguments:
+  DOMAIN         The domain for which you want to write a DNS record. Example: example.com
+  SUBDOMAIN      The subdomain to point to. Examples: 'sub' or '@'
+  APIKEY         Your Gandi.net API key
+
+options:
+  -h, --help     show this help message and exit
+  -v, --verbose  Enable verbose mode
+  --type TYPE    The type of DNS record to create. Default: A
 ```
-Each time the script runs and the objects are created they check if *the IPs in the DNS record* match the *current public IP*.
 
-2. **Run the script using a cron task** :
+Each time the script runs it check if *the IPs in the DNS record* match the *current public IP* and if they dont use a PUT request to apply the new IP to the DNS.
 
-```
+## Automation : **Run the script using a cron task**
+
+```bash
 sudo crontab -e
 ```
 
-And then to execute *every 15 minutes* write in the crontab :  
+And then to execute *every X minutes* (where X should be an integer between 1 and 59) write in the crontab :  
 
 ```
- */15 * * * * python /opt/services/scripts/gandyndns.py
+ */X * * * * python /path/to/script/gandyndns.py example.com @ my-api-key
 ```
