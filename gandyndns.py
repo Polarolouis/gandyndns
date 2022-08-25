@@ -14,9 +14,10 @@ parser.add_argument("domain", metavar="DOMAIN",
 parser.add_argument("subdomain", metavar="SUBDOMAIN",
                     help="The subdomain to point to. Examples: 'sub' or '@'")
 parser.add_argument("apikey", metavar="APIKEY", help="Your Gandi.net API key")
+parser.add_argument("--destination", metavar="DESTINATION", default="public_ip", 
+                    help="The destination to point the subdomain to. Might be an IP, for instance 10.0.0.1, might be a subdomain, for instance @. Default: public_ip, which retrieves the machine public ip")
 parser.add_argument("--type", metavar="TYPE", default='A',
-                    help="The type of DNS record to create. Default: A")
-
+                    help="The type of DNS record to create. Default: A", choices=['A','CNAME'])
 args = parser.parse_args()
 print(args)
 
@@ -25,6 +26,7 @@ domain = args.domain
 apikey = args.apikey
 subdomain = args.subdomain
 type = args.type
+destination = args.destination
 
 domain_record_string = f"DNS {type} record for {subdomain}.{domain}"
 
@@ -71,7 +73,10 @@ def retrieve_dns_IP(apiUrl, headers):
 
 def update_dns_IP(apiUrl, headers):
     """Updates the IP in the DNS record using the IP provided (acquired by retrieve_public_IP) if it is different from the DNS IP"""
-    publicIP = retrieve_public_IP()
+    if destination == "public_ip":
+        publicIP = retrieve_public_IP()
+    else:
+        publicIP = destination
     dnsIP = retrieve_dns_IP(apiUrl, headers)
     if verbose:
         print(f"Public IP is : {publicIP}")
