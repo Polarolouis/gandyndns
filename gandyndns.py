@@ -21,7 +21,7 @@ parser.add_argument("--type", metavar="TYPE", default='A',
 parser.add_argument("--ttl", metavar="TTL", default=10800,
                     help="The Time To Live in seconds. This is the number of seconds the record must be stored in cache. Default value is 10800s (3hrs).", type=int)
 args = parser.parse_args()
-print(args)
+
 
 verbose = args.verbose
 domain = args.domain
@@ -30,6 +30,9 @@ subdomain = args.subdomain
 record_type = args.type
 ttl = args.ttl
 destination = args.destination
+
+if verbose:
+    print(f"The parsed args : {args}")
 
 domain_record_string = f"DNS {record_type} record for {subdomain}.{domain}"
 
