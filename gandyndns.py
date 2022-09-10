@@ -78,36 +78,38 @@ def retrieve_dns_ip(api_url, headers):
 def update_dns_ip(api_url, headers):
     """Updates the IP in the DNS record using the IP provided (acquired by retrieve_public_ip) if it is different from the DNS IP"""
     if destination == "public_ip":
-        publicIP = retrieve_public_ip()
+        public_ip = retrieve_public_ip()
     else:
-        publicIP = destination
-    dnsIP, dns_ttl = retrieve_dns_ip(api_url, headers)
+        public_ip = destination
+    dns_ip, dns_ttl = retrieve_dns_ip(api_url, headers)
     if verbose:
-        print(f"Public IP is : {publicIP}")
-        if dnsIP:
-            print(f"DNS IP is : {dnsIP}")
+        print(f"Public IP is : {public_ip}")
+        if dns_ip:
+            print(f"DNS IP is : {dns_ip}")
         else:
             print("The subdomain doesn't exist, no DNS IP associated")
         print(f"DNS TTL is {dns_ttl}")
-    if publicIP != dnsIP or dns_ttl != ttl:
+    if public_ip != dns_ip or dns_ttl != ttl:
 
         data = dict()
 
-        data["rrset_values"] = [publicIP]
-        print(f"{domain_record_string : <{domain_record_string_lenght}} | Old IP : {dnsIP} replaced -> by New IP : {publicIP}")
+        data["rrset_values"] = [public_ip]
+        print(f"{domain_record_string : <{domain_record_string_lenght}} | Old IP : {dns_ip} replaced -> by New IP : {public_ip}")
+        print(f"{domain_record_string : <{domain_record_string_lenght}} | Old TTL : {dns_ttl} replaced -> by New IP : {ttl}")
 
         if dns_ttl != ttl:
             data["rrset_ttl"] = ttl
             if verbose:
-                print(f"TTL are differents. DNS TTL {dns_ttl} where wanted TTL is {ttl}")
-        
+                print(
+                    f"TTL are differents. DNS TTL {dns_ttl} where wanted TTL is {ttl}")
+
         if verbose:
             print(f"The data to be sent is : {data}")
         response = requests.put(url=api_url, headers=headers, json=data)
         if verbose:
             print(f"Request exited with status code : {response.status_code}")
     else:
-        if publicIP == dnsIP:
+        if public_ip == dns_ip:
             print(
                 f"{domain_record_string : <{domain_record_string_lenght}} | {'IPs are the same.':<17}")
         if dns_ttl == ttl:
