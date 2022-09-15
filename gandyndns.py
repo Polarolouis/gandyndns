@@ -9,6 +9,7 @@ parser = argparse.ArgumentParser(
     description="A script which connect to Gandi.net API to change IP associated to a DNS record")
 parser.add_argument("-v", "--verbose",
                     help="Enable verbose mode", action="store_true")
+parser.add_argument("-i", "--info", help="Enable information mode and retrieves information about the subdomain", action="store_true")
 parser.add_argument("domain", metavar="DOMAIN",
                     help="The domain for which you want to write a DNS record. Example: example.com")
 parser.add_argument("subdomain", metavar="SUBDOMAIN",
@@ -24,6 +25,7 @@ args = parser.parse_args()
 
 
 verbose = args.verbose
+info_mode = args.info
 domain = args.domain
 apikey = args.apikey
 subdomain = args.subdomain
@@ -79,6 +81,10 @@ def retrieve_dns_ip(api_url, headers):
         retrieved_dns_ip = ""
     return retrieved_dns_ip, retrieved_ttl
 
+def retrieve_rrset(api_url, headers):
+    response = requests.get(api_url, headers=headers)
+    response_json = response.json()
+    return response_json
 
 def update_dns_ip(api_url, headers):
     """Updates the IP in the DNS record using the IP provided (acquired by retrieve_public_ip) if it is different from the DNS IP"""
@@ -124,4 +130,9 @@ def update_dns_ip(api_url, headers):
 
 
 if __name__ == '__main__':
-    update_dns_ip(api_url, headers)
+    if info_mode:
+        print("Retrieving information\nIf this fails, don't forget to check if the record type is correct.")
+        print("-------------------------------------------------------------------")
+        print(retrieve_rrset(api_url, headers))
+    else:
+        update_dns_ip(api_url, headers)
