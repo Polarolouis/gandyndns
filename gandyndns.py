@@ -68,6 +68,8 @@ def retrieve_dns_ip(api_url, headers):
     response = requests.get(api_url, headers=headers)
 
     response_json = response.json()  # IPs are stored in a list as string
+    retrieved_dns_ip = None
+    retrieved_ttl = None
     try:
         retrieved_dns_ip = response_json['rrset_values'][0]
         retrieved_ttl = response_json['rrset_ttl']
@@ -91,7 +93,8 @@ def update_dns_ip(api_url, headers):
             print(f"DNS IP is : {dns_ip}")
         else:
             print("The subdomain doesn't exist, no DNS IP associated")
-        print(f"DNS TTL is {dns_ttl}")
+        if dns_ttl:
+            print(f"DNS TTL is {dns_ttl}")
     if public_ip != dns_ip or dns_ttl != ttl:
 
         data = dict()
